@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "email" => $email,
                 "password" => $password,
                 "language" => $language,
-                "role" => $role,
+                "role" => $role
             ];
 
             $tableauUsers['users'][] = $user;
