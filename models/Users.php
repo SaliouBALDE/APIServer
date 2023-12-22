@@ -1,5 +1,5 @@
 <?php
-    header('Content-Type: application/json');
+header('Content-Type: application/json');
 class Users
 {
     //Connection
@@ -30,10 +30,11 @@ class Users
      *
      * //@return void
      */
-    public function lire(){
+    public function lire()
+    {
         //$sql = "SELECT * FROM db_booking.users";
         $sql = "SELECT id_user, firstname, lastname, email, password,language, role
-                FROM ".$this->table."
+                FROM " . $this->table . "
                 ORDER BY id_user";
         $query = $this->connection->prepare($sql);
 
@@ -42,9 +43,10 @@ class Users
         return $query;
     }
 
-    public function creer() {
+    public function creer()
+    {
 
-        $sql = "INSERT INTO ".$this->table." SET firstname=:firstname, lastname=:lastname, email=:email, password=:password, language=:language, role=:role ";
+        $sql = "INSERT INTO " . $this->table . " SET firstname=:firstname, lastname=:lastname, email=:email, password=:password, language=:language, role=:role ";
 
         $query = $this->connection->prepare($sql);
 
@@ -62,38 +64,40 @@ class Users
         $query->bindParam(":language", $this->language);
         $query->bindParam(":role", $this->role);
 
-        if($query->execute()) {
+        if ($query->execute()) {
             return true;
         }
 
         return false;
     }
 
-    public function supprimer() {
-        $sql = "DELETE 
-                FROM ".$this->table."
+    public function supprimer()
+    {
+        $sql = "DELETE
+                FROM " . $this->table . "
                 WHERE id_user = ?
                 LIMIT 1";
-        
-        $query = $this->connection->prepare($sql);
-        $this -> id_user = htmlspecialchars(strip_tags($this->id_user));
-        $query -> bindParam(1, $this->id_user);
 
-        if($query -> execute()) {
+        $query = $this->connection->prepare($sql);
+        $this->id_user = htmlspecialchars(strip_tags($this->id_user));
+        $query->bindParam(1, $this->id_user);
+
+        if ($query->execute()) {
             return true;
         }
 
         return false;
     }
 
-    public function checkEmail() {
-        $sql = "SELECT * FROM ".$this->table." WHERE email=?";
+    public function checkEmail()
+    {
+        $sql = "SELECT * FROM " . $this->table . " WHERE email=?";
 
         $stm = $this->connection->prepare($sql);
         $this->email = htmlspecialchars(strip_tags($this->email));
         $stm->bindParam(1, $this->email);
 
-        if($stm->execute()) {
+        if ($stm->execute()) {
             //$donnee = $stm->mysqli_stmt_get_result();
 
             //return $donnee->fetch_assoc();
@@ -102,15 +106,16 @@ class Users
         return array();
     }
 
-    public function modifier () {
+    public function modifier()
+    {
 
-       $sql = "UPDATE".$this->table."SET firstname=".$this->firstname.", lastname=".$this->lastname.", email=".$this->email.", password=".$this->password.", language=".$this->language.", role=".$this->role." WHERE id_user=".$this->id_user."";
+        $sql = "UPDATE" . $this->table . "SET firstname=" . $this->firstname . ", lastname=" . $this->lastname . ", email=" . $this->email . ", password=" . $this->password . ", language=" . $this->language . ", role=" . $this->role . " WHERE id_user=" . $this->id_user . "";
         //$sql = "UPDATE users SET firstname=".$this->firstname.", lastname=".$this->lastname.", email=".$this->email.", password=".$this->password.", language=".$this->language.", role=".$this->role." WHERE id_user=".$this->id_user."";
 
         //$sql = "INSERT INTO ".$this->table." SET id_user = :id_user, firstname = :firstname, lastname = :lastname, email = :email, password = :password, language = :language, role = :role WHERE id_user = :id_user";
-     
+
         $query = $this->connection->prepare($sql);
-      
+
         $this->firstname = htmlspecialchars(strip_tags($this->firstname));
         $this->lastname = htmlspecialchars(strip_tags($this->lastname));
         $this->email = htmlspecialchars(strip_tags($this->email));
@@ -119,22 +124,20 @@ class Users
         $this->role = htmlspecialchars(strip_tags($this->role));
         $this->id_user = htmlspecialchars(strip_tags($this->id_user));
 
-
-        
         $query->bindParam(':firstname', $this->firstname, PDO::PARAM_STR);
         $query->bindParam(':lastname', $this->lastname, PDO::PARAM_STR);
         $query->bindParam(':email', $this->email, PDO::PARAM_STR);
         $query->bindParam(':password', $this->password, PDO::PARAM_STR);
         $query->bindParam(':language', $this->language, PDO::PARAM_STR);
-        $query->bindParam(':role', $this->role, PDO::PARAM_STR);    
+        $query->bindParam(':role', $this->role, PDO::PARAM_STR);
         $query->bindParam(':id_user', $this->id_user, PDO::PARAM_STR);
-        
-        if($query->execute()) {
+
+        if ($query->execute()) {
             return true;
         }
 
         return false;
-        
+
     }
 
 }
