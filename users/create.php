@@ -21,27 +21,36 @@
 
         //On recupere les informations envoyées
         $donnees = json_decode(file_get_contents("php://input"));
-        
-        if(!empty($donnees->firstname) && !empty($donnees->lastname) && !empty($donnees->email) && !empty($donnees->password) && !empty($donnees->language) && !empty($donnees->role)) {
-            //on a reçu les données
-            //On va hydrater notre objet
-            $user->firstname = $donnees->firstname;
-            $user->lastname = $donnees->lastname;
-            $user->email = $donnees->email;
-            $user->password = $donnees->password;
-            $user->language = $donnees->language;
-            $user->role = $donnees->role;
 
-            if($user->creer()) {
-                // Ici la creation a fonctionné
-                //On envoie un code 201
-                http_response_code(201);
-                echo json_encode(["messsage" => "l'ajout a été effectué"]);
-            } else {
-                // Ici la n'a pas fonctionné
-                //On envoie un code 503
-                http_response_code(503);
-                echo json_encode(["messsage" => "l'ajout n'a pas été effectué"]);
+        $email_data = $user->checkEmail();
+        //Si on a deja ce email dans la DB
+        if(!empty($email_data)) {
+            //On ne fait pas d'insertion
+            http_response_code(500);
+            echo json_encode(["messsage" => "Cet utilisateur existe déja, essayer une autre adresse email!"]);
+        }else {
+            if(!empty($donnees->firstname) && !empty($donnees->lastname) && !empty($donnees->email) && !empty($donnees->password) && !empty($donnees->language) && !empty($donnees->role)) {
+                //on a reçu les données
+                //On va hydrater notre objet
+                $user->firstname = $donnees->firstname;
+                $user->lastname = $donnees->lastname;
+                $user->email = $donnees->email;
+                //$user->password = $donnees->password;
+                $user->password = password_hash($donnees->password, PASSWORD_DEFAULT).
+                $user->language = $donnees->language;
+                $user->role = $donnees->role;
+    
+                if($user->creer()) {
+                    // Ici la creation a fonctionné
+                    //On envoie un code 201
+                    http_response_code(201);
+                    echo json_encode(["messsage" => "l'ajout a été effectué"]);
+                } else {
+                    // Ici la n'a pas fonctionné
+                    //On envoie un code 503
+                    http_response_code(503);
+                    echo json_encode(["messsage" => "l'ajout n'a pas été effectué"]);
+                }
             }
         }
     }else {

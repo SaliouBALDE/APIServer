@@ -1,5 +1,5 @@
 <?php
-
+    header('Content-Type: application/json');
 class Users
 {
     //Connection
@@ -86,7 +86,21 @@ class Users
         return false;
     }
 
+    public function checkEmail() {
+        $sql = "SELECT * FROM ".$this->table." WHERE email=?";
 
+        $stm = $this->connection->prepare($sql);
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $stm->bindParam(1, $this->email);
+
+        if($stm->execute()) {
+            //$donnee = $stm->mysqli_stmt_get_result();
+
+            //return $donnee->fetch_assoc();
+        }
+
+        return array();
+    }
 
     public function modifier () {
 
